@@ -9,14 +9,14 @@ class SongsService {
     this._pool = new Pool();
   }
 
-  async addSong({ title, year, genre, performer, duration, }) {
+  async addSong({ title, year, performer, genre, duration, }) {
     const id = nanoid(16);
     const createdAt = new Date().toISOString();
     const updatedAt = createdAt;
 
     const query = {
       text: "INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6) RETURNING id",
-      values: [id, title, year, genre, performer, duration, createdAt, updatedAt],
+      values: [id, title, year, performer, genre, duration, createdAt, updatedAt],
     };
 
     const result = await this._pool.query(query);
@@ -51,7 +51,7 @@ class SongsService {
     const updatedAt = new Date().toISOString();
     const query = {
       text: "UPDATE songs SET title = $1, body = $2, tags = $3, updated_at = $4 WHERE id = $5 RETURNING id",
-      values: [itle, year, genre, performer, duration, updatedAt, id],
+      values: [itle, year, performer, genre, duration, updatedAt, id],
     };
 
     const result = await this._pool.query(query);
