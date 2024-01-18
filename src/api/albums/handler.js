@@ -15,10 +15,10 @@ class AlbumHandler {
   async postAlbumHandler(request, h) {
     try {
       this._validator.validateAlbumPayload(request.payload);
-      const { title, year, artist } = request.payload;
+      const { name, year, artist } = request.payload;
 
       const albumId = await this._service.addAlbum({
-        title, year, artist,
+        name, year, artist,
       });
 
       const response = h.response({
