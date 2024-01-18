@@ -8,6 +8,7 @@ const ClientError = require("./exceptions/ClientError");
 
 const init = async () => {
   const songsService = new SongsService();
+  const albumsService = new AlbumService(); 
   const server = Hapi.server({
     port: process.env.PORT,
     host: process.env.HOST,
@@ -27,23 +28,31 @@ const init = async () => {
     },
   });
 
-
-  server.ext('onPreResponse', (request, h) => {
-    // mendapatkan konteks response dari request
-    const { response } = request;
-  
-    // penanganan client error secara internal.
-    if (response instanceof ClientError) {
-      const newResponse = h.response({
-        status: 'fail',
-        message: response.message,
-      });
-      newResponse.code(response.statusCode);
-      return newResponse;
-    }
-      
-    return h.continue;
+  await server.register({
+    plugin: albums,
+    options: {
+      service: albumsService,
+      validator: AlbumValidator,
+    },
   });
+
+
+  // server.ext('onPreResponse', (request, h) => {
+  //   // mendapatkan konteks response dari request
+  //   const { response } = request;
+  
+  //   // penanganan client error secara internal.
+  //   if (response instanceof ClientError) {
+  //     const newResponse = h.response({
+  //       status: 'fail',
+  //       message: response.message,
+  //     });
+  //     newResponse.code(response.statusCode);
+  //     return newResponse;
+  //   }
+      
+  //   return h.continue;
+  // });
 
  
   await server.start();
